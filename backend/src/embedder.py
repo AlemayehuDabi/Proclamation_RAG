@@ -1,29 +1,102 @@
+# -*- coding: utf-8 -*-
+"""
+Multilingual embedding module using OpenAI text-embedding-3-large.
+Supports Amharic and English for the bilingual RAG system.
+All I/O uses UTF-8; ensure OPENAI_API_KEY is set.
+"""
+from __future__ import annotations
+
 import os
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
-from src.loaders import load_and_split_docs
+from typing import List
 
-VECTORSTORE_PATH = "vectorstore/index"
+# Default model for multilingual support (Amharic + English)
+EMBEDDING_OPEN_AI_MODEL = "text-embedding-3-large"
+EMBEDDING_GEMINI_AI_MODEL = 'models/text-embedding-001'
+EMBEDDING_HUGGING_FACE_MODEL = 'intfloat/multilingual-e5-large'
 
-def build_vectorstore():
-    docs = load_and_split_docs()
-    if not docs:
-        raise ValueError("❌ No documents found in data/publications. Check file path and format.")
 
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+def embed_text(text: str) -> List[float]:
+    """
+    Embed a single text string using OpenAI text-embedding-3-large (multilingual).
+    Use for retrieval: same model as ingestion so queries in Amharic or English match chunks.
 
-    os.makedirs(VECTORSTORE_PATH, exist_ok=True)
-    vectorstore = Chroma.from_documents(
-        documents=docs,
-        embedding=embeddings,
-        persist_directory=VECTORSTORE_PATH
+    Args:
+        text: Input text (Amharic, English, or mixed). UTF-8.
+
+    Returns:
+        Embedding vector as list of floats.
+    """
+    return embed_texts([text])[0]
+
+
+def embed_texts(texts: List[str]) -> List[List[float]]:
+    """
+    Embed multiple texts in one API call (batch).
+
+    Args:
+        texts: List of input texts.
+
+    Returns:
+        List of embedding vectors.
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise ImportError("openai package is required. Install with: pip install openai")
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable is not set.")
+
+    client = OpenAI(api_key=api_key)
+    # Inputs are passed as-is; OpenAI API accepts UTF-8
+    response = client.embeddings.create(
+        model=EMBEDDING_OPEN_AI_MODEL,
+        input=texts,
+        encoding_format="float",
     )
-    # No need to call persist() — from_documents saves automatically in this version
-    return vectorstore
+    # Preserve order by index
+    ordered = [None] * len(texts)
+    for item in response.data:
+        if item.index is not None:
+            ordered[item.index] = item.embedding
+    return [e for e in ordered if e is not None]
 
-def load_vectorstore():
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    return Chroma(
-        persist_directory=VECTORSTORE_PATH,
-        embedding_function=embeddings
-    )
+
+# This is open-ai
+# def get_langchain_embedding():
+#     """
+#     Return a LangChain-compatible embedding function for use with Chroma/retriever.
+#     Uses OpenAI text-embedding-3-large for multilingual support.
+#     """
+#     from langchain_openai import OpenAIEmbeddings
+    
+#     return OpenAIEmbeddings(
+#         model=EMBEDDING_MODEL,
+#         openai_api_key=os.getenv("OPENAI_API_KEY"),
+#     )
+
+# genai
+# def get_langchain_embedding():
+#     """
+#     Return a LangChain-compatible embedding function using Google Gemini embeddings.
+#     Uses text-embedding-004 for multilingual support.
+#     """
+#     from langchain_google_genai import GoogleGenerativeAIEmbeddings
+#     import os
+
+#     return GoogleGenerativeAIEmbeddings(
+#         model=EMBEDDING_GEMINI_AI_MODEL,
+#         google_api_key=os.getenv("GOOGLE_API_KEY"),
+#     )
+
+# hugging face
+# local just for testing
+def get_langchain_embedding():
+    """
+    Return a LangChain-compatible embedding function using  hugging face embeddings.
+    i am using intfloat/multilingual-e5-large for multilingual support.
+    """
+    from sentence_transformers import SentenceTransformer
+
+    return SentenceTransformer(EMBEDDING_HUGGING_FACE_MODEL)
