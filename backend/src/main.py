@@ -108,6 +108,8 @@ def ask_rag(request: QueryRequest):
             sources=result["sources"],
             articles=result["articles"],
         )
+        # save the output inside a real db
+
         return {
             "answer": result["answer"],
             "sources": result["sources"],
@@ -138,3 +140,9 @@ def ready():
             "detail": "Run ingestion first: python ingest_proclamation.py",
         },
     )
+
+# after i did auth - i will implement the logic for the db. - like crud of chat, and conversation
+
+# @app.get('/history')
+# def history():
+#     return
