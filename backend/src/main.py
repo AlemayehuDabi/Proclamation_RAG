@@ -3,11 +3,15 @@
 FastAPI server for the Bilingual Startup Proclamation RAG.
 Static source RAG: run ingest_proclamation once, then use POST /query for retrieval + generation.
 """
+
 from __future__ import annotations
 
 from typing import List
 
+import os
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -19,6 +23,21 @@ app = FastAPI(
     title="Startup Proclamation RAG API",
     description="Bilingual (Amharic/English) RAG over Ethiopian Startup Proclamation No. 1396/2025",
 )
+
+# CORS: comma-separated origins in CORS_ORIGINS, e.g. "http://localhost:8080,https://app.example.com"
+_cors_raw = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:8080,http://127.0.0.1:8080,http://[::1]:8080",
+)
+_cors_origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
+if _cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 class QueryRequest(BaseModel):
@@ -52,17 +71,22 @@ def query(request: QueryRequest):
         pipeline = _get_pipeline()
         result = run_rag_query(request.question, pipeline=pipeline, top_k=5)
         # Persist this turn (question, answer, sources, articles)
+
+        # print({"result": result})
+
         append_rag_turn(
             question=request.question,
-            answer=result["answer"],
+            answer = result["answer"][0]["text"],
             sources=result["sources"],
             articles=result["articles"],
         )
+
         return QueryResponse(
-            answer=result["answer"],
+            answer = result["answer"][0]["text"],
             sources=result["sources"],
             articles=result["articles"],
         )
+        
     except RuntimeError as e:
         if "Vector store not found" in str(e) or "ingestion" in str(e).lower():
             raise HTTPException(status_code=503, detail=str(e))

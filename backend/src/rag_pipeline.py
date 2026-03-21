@@ -21,15 +21,27 @@ PROMPTS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "prompts
 
 def _get_llm():
     """Use GPT-4o when OPENAI_API_KEY is set, else Google Gemini (bilingual)."""
+    if os.getenv("GOOGLE_API_KEY"):
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        # return ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
+        try:
+            return ChatGoogleGenerativeAI(
+                model="gemini-flash-latest",
+                temperature=0.3,
+            )
+        except Exception:
+            # fallback model
+            return ChatGoogleGenerativeAI(
+                model="gemini-1.5-pro",
+                temperature=0.3,
+            )
+
     if os.getenv("OPENAI_API_KEY"):
         from langchain_openai import ChatOpenAI
         return ChatOpenAI(
             model="gpt-4o",
             temperature=0.3,
         )
-    if os.getenv("GOOGLE_API_KEY"):
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
     raise ValueError(
         "Set OPENAI_API_KEY or GOOGLE_API_KEY in .env for the LLM."
     )

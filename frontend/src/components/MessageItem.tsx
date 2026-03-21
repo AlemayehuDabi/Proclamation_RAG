@@ -1,18 +1,18 @@
-import ReactMarkdown from "react-markdown";
-import { User, Bot } from "lucide-react";
-import type { ChatMessage } from "@/utils/api";
-import { cn } from "@/lib/utils";
+import ReactMarkdown from 'react-markdown';
+import { User, Bot } from 'lucide-react';
+import type { ChatMessage } from '@/utils/api';
+import { cn } from '@/lib/utils';
 
 interface MessageItemProps {
   message: ChatMessage;
 }
 
 export function MessageItem({ message }: MessageItemProps) {
-  const isUser = message.role === "user";
-  const isAmharic = message.language === "AM";
+  const isUser = message.role === 'user';
+  const isAmharic = message.language === 'AM';
 
   return (
-    <div className={cn("group flex gap-4 py-5", isUser ? "justify-end" : "")}>
+    <div className={cn('group flex gap-4 py-5', isUser ? 'justify-end' : '')}>
       {!isUser && (
         <div className="shrink-0 w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center mt-0.5">
           <Bot size={14} className="text-primary" />
@@ -20,9 +20,9 @@ export function MessageItem({ message }: MessageItemProps) {
       )}
       <div
         className={cn(
-          "min-w-0 max-w-[65ch]",
-          isUser ? "text-right" : "",
-          isAmharic ? "font-ethiopic leading-relaxed" : ""
+          'min-w-0 max-w-[65ch]',
+          isUser ? 'text-right' : '',
+          isAmharic ? 'font-ethiopic leading-relaxed' : '',
         )}
       >
         {isUser ? (
@@ -33,20 +33,32 @@ export function MessageItem({ message }: MessageItemProps) {
           <div className="prose-chat text-foreground">
             <ReactMarkdown
               components={{
-                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-foreground">{children}</strong>
+                p: ({ children }) => (
+                  <p className="mb-3 last:mb-0">{children}</p>
                 ),
-                ul: ({ children }) => <ul className="mb-3 ml-4 list-disc space-y-1">{children}</ul>,
-                ol: ({ children }) => <ol className="mb-3 ml-4 list-decimal space-y-1">{children}</ol>,
-                li: ({ children }) => <li className="text-foreground">{children}</li>,
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-foreground">
+                    {children}
+                  </strong>
+                ),
+                ul: ({ children }) => (
+                  <ul className="mb-3 ml-4 list-disc space-y-1">{children}</ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="mb-3 ml-4 list-decimal space-y-1">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-foreground">{children}</li>
+                ),
                 blockquote: ({ children }) => (
                   <blockquote className="border-l-2 border-primary/30 pl-4 italic text-muted-foreground my-3">
                     {children}
                   </blockquote>
                 ),
                 code: ({ children, className }) => {
-                  const isBlock = className?.includes("language-");
+                  const isBlock = className?.includes('language-');
                   if (isBlock) {
                     return (
                       <pre className="bg-secondary rounded-lg p-4 overflow-x-auto my-3 text-[13px]">

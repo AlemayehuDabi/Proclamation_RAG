@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Plus,
   MessageSquare,
@@ -6,25 +6,29 @@ import {
   PanelLeftClose,
   PanelLeft,
   FileText,
-} from "lucide-react";
-import { LanguageSelector } from "@/components/LanguageSelector";
-import { ChatInput } from "@/components/ChatInput";
-import { MessageItem, TypingIndicator } from "@/components/MessageItem";
-import { SourcePanel } from "@/components/SourcePanel";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import type { Language, ChatMessage, Source, ChatSession } from "@/utils/api";
-import { queryRAG } from "@/utils/api";
-import { cn } from "@/lib/utils";
+} from 'lucide-react';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { ChatInput } from '@/components/ChatInput';
+import { MessageItem, TypingIndicator } from '@/components/MessageItem';
+import { SourcePanel } from '@/components/SourcePanel';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import type { Language, ChatMessage, Source, ChatSession } from '@/utils/api';
+import { queryRAG } from '@/utils/api';
+import { cn } from '@/lib/utils';
 
 const mockHistory: ChatSession[] = [
-  { id: "1", title: "Analysis of Ethiopian Trade Policy", createdAt: new Date() },
-  { id: "2", title: "የኢትዮጵያ ኢኮኖሚ ዕድገት ትንተና", createdAt: new Date() },
-  { id: "3", title: "Infrastructure Investment Review", createdAt: new Date() },
-  { id: "4", title: "Agricultural Export Data 2024", createdAt: new Date() },
+  {
+    id: '1',
+    title: 'Analysis of Ethiopian Trade Policy',
+    createdAt: new Date(),
+  },
+  { id: '2', title: 'የኢትዮጵያ ኢኮኖሚ ዕድገት ትንተና', createdAt: new Date() },
+  { id: '3', title: 'Infrastructure Investment Review', createdAt: new Date() },
+  { id: '4', title: 'Agricultural Export Data 2024', createdAt: new Date() },
 ];
 
 export default function ChatPage() {
-  const [lang, setLang] = useState<Language>("EN");
+  const [lang, setLang] = useState<Language>('EN');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeSources, setActiveSources] = useState<Source[]>([]);
@@ -45,7 +49,7 @@ export default function ChatPage() {
   const handleSend = async (content: string) => {
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "user",
+      role: 'user',
       content,
       language: lang,
     };
@@ -63,14 +67,14 @@ export default function ChatPage() {
             const existing = prev.find((m) => m.id === assistantId);
             if (existing) {
               return prev.map((m) =>
-                m.id === assistantId ? { ...m, content: chunk } : m
+                m.id === assistantId ? { ...m, content: chunk } : m,
               );
             }
             return [
               ...prev,
               {
                 id: assistantId,
-                role: "assistant" as const,
+                role: 'assistant' as const,
                 content: chunk,
                 language: lang,
                 sources: [],
@@ -81,9 +85,9 @@ export default function ChatPage() {
         (sources) => {
           setActiveSources(sources);
           setMessages((prev) =>
-            prev.map((m) => (m.id === assistantId ? { ...m, sources } : m))
+            prev.map((m) => (m.id === assistantId ? { ...m, sources } : m)),
           );
-        }
+        },
       );
     } catch {
       // error handled via toast in production
@@ -104,8 +108,8 @@ export default function ChatPage() {
       {/* Left Sidebar — History */}
       <aside
         className={cn(
-          "border-r border-border/50 surface-sunken flex-col transition-all duration-200",
-          sidebarOpen ? "w-64 flex" : "w-0 hidden"
+          'border-r border-border/50 surface-sunken flex-col transition-all duration-200',
+          sidebarOpen ? 'w-64 flex' : 'w-0 hidden',
         )}
       >
         <div className="p-3 border-b border-border/50">
@@ -149,7 +153,11 @@ export default function ChatPage() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-1.5 rounded-md hover:bg-secondary transition-colors text-muted-foreground"
             >
-              {sidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}
+              {sidebarOpen ? (
+                <PanelLeftClose size={16} />
+              ) : (
+                <PanelLeft size={16} />
+              )}
             </button>
             <div className="h-5 w-px bg-border" />
             <h1 className="text-[13px] font-bold tracking-tight text-foreground">
@@ -161,8 +169,8 @@ export default function ChatPage() {
             <button
               onClick={() => setSourcePanelOpen(!sourcePanelOpen)}
               className={cn(
-                "p-1.5 rounded-md hover:bg-secondary transition-colors hidden lg:flex",
-                sourcePanelOpen ? "text-primary" : "text-muted-foreground"
+                'p-1.5 rounded-md hover:bg-secondary transition-colors hidden lg:flex',
+                sourcePanelOpen ? 'text-primary' : 'text-muted-foreground',
               )}
             >
               <FileText size={16} />
@@ -184,20 +192,23 @@ export default function ChatPage() {
                 Interrogate your documents
               </h2>
               <p className="text-[15px] text-muted-foreground max-w-md leading-relaxed">
-                in <span className="font-medium text-foreground">English</span> and{" "}
-                <span className="font-ethiopic font-medium text-foreground">አማርኛ</span>
+                in <span className="font-medium text-foreground">English</span>{' '}
+                and{' '}
+                <span className="font-ethiopic font-medium text-foreground">
+                  አማርኛ
+                </span>
               </p>
               <div className="mt-8 flex flex-wrap gap-2 justify-center max-w-lg">
                 {[
-                  lang === "EN"
-                    ? "Summarize the trade policy report"
-                    : "የንግድ ፖሊሲ ሪፖርቱን ጠቅለል አድርግ",
-                  lang === "EN"
-                    ? "What are the key economic indicators?"
-                    : "ዋና ዋና የኢኮኖሚ አመልካቾች ምንድን ናቸው?",
-                  lang === "EN"
-                    ? "Compare infrastructure investments"
-                    : "የመሠረተ ልማት ኢንቨስትመንቶችን አነጻጽር",
+                  lang === 'EN'
+                    ? 'Summarize the trade policy report'
+                    : 'የንግድ ፖሊሲ ሪፖርቱን ጠቅለል አድርግ',
+                  lang === 'EN'
+                    ? 'What are the key economic indicators?'
+                    : 'ዋና ዋና የኢኮኖሚ አመልካቾች ምንድን ናቸው?',
+                  lang === 'EN'
+                    ? 'Compare infrastructure investments'
+                    : 'የመሠረተ ልማት ኢንቨስትመንቶችን አነጻጽር',
                 ].map((q) => (
                   <button
                     key={q}
@@ -215,9 +226,10 @@ export default function ChatPage() {
                 {messages.map((msg) => (
                   <MessageItem key={msg.id} message={msg} />
                 ))}
-                {isStreaming && !messages.find((m) => m.role === "assistant" && m.content === "") && (
-                  <TypingIndicator />
-                )}
+                {isStreaming &&
+                  !messages.find(
+                    (m) => m.role === 'assistant' && m.content === '',
+                  ) && <TypingIndicator />}
               </div>
             </div>
           )}
@@ -234,8 +246,8 @@ export default function ChatPage() {
       {/* Right Sidebar — Sources */}
       <aside
         className={cn(
-          "border-l border-border/50 surface-sunken overflow-y-auto transition-all duration-200",
-          sourcePanelOpen ? "w-80 hidden lg:block" : "w-0 hidden"
+          'border-l border-border/50 surface-sunken overflow-y-auto transition-all duration-200',
+          sourcePanelOpen ? 'w-80 hidden lg:block' : 'w-0 hidden',
         )}
       >
         <div className="p-4 border-b border-border/50 sticky top-0 bg-background/50 backdrop-blur-sm z-10">

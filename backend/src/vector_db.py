@@ -3,6 +3,7 @@
 ChromaDB vector store for the Startup Proclamation RAG (via LangChain Chroma).
 Persistent storage, metadata support, collection: startup_proclamation.
 """
+
 from __future__ import annotations
 
 import os
@@ -16,6 +17,7 @@ _raw_path = os.environ.get(
     "CHROMA_PERSIST_PATH",
     os.path.join("vectorstore", "chroma_startup_proclamation"),
 )
+
 # Resolve to absolute path so retrieval works regardless of cwd
 VECTORSTORE_PATH = os.path.abspath(_raw_path) if not os.path.isabs(_raw_path) else _raw_path
 COLLECTION_NAME = "startup_proclamation"
@@ -58,6 +60,7 @@ def collection_exists() -> bool:
     """Return True if the proclamation vectorstore directory exists and has data."""
     if not os.path.isdir(VECTORSTORE_PATH):
         return False
+        
     try:
         vs = get_vectorstore()
         # Chroma: minimal query to verify collection is built and queryable

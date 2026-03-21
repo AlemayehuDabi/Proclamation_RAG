@@ -5,6 +5,9 @@ Supports Amharic and English for the bilingual RAG system.
 All I/O uses UTF-8; ensure OPENAI_API_KEY is set.
 """
 from __future__ import annotations
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import os
 from typing import List
@@ -94,9 +97,13 @@ def embed_texts(texts: List[str]) -> List[List[float]]:
 # local just for testing
 def get_langchain_embedding():
     """
-    Return a LangChain-compatible embedding function using  hugging face embeddings.
-    i am using intfloat/multilingual-e5-large for multilingual support.
+    Return a LangChain-compatible embedding using local HuggingFace model.
+    Uses multilingual-e5-large for multilingual support.
     """
-    from sentence_transformers import SentenceTransformer
+    from langchain_huggingface import HuggingFaceEmbeddings
 
-    return SentenceTransformer(EMBEDDING_HUGGING_FACE_MODEL)
+    return HuggingFaceEmbeddings(
+        model_name=EMBEDDING_HUGGING_FACE_MODEL,
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": True},
+    )
