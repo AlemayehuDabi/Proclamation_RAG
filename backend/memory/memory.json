@@ -134,6 +134,33 @@
         19
       ],
       "articles": []
+    },
+    {
+      "question": "What rights do startup founders have?",
+      "answer": "Based on the Ethiopian Startup Proclamation No. 1396/2025, startup founders and their designated startups have the following rights and protections:\n\n*   **Right to Designation and Certification:**\n    *   An organization established for no more than five years and possessing a valid license has the right to apply for and obtain a startup designation (Page 12, Article 7, Sub-Article 3).\n    *   Once designated, the startup has the right to receive a certificate from the Ministry evidencing its status (Page 12, Article 7, Sub-Article 4).\n\n*   **Protection of Innovation:**\n    *   Designated startups have the right to protect their products, services, or processes. No person may replicate, utilize, or appropriate these without the prior written consent of the startup and approval from the Ministry (Page 38, Article 41, Sub-Article 1).\n\n*   **Access to Finance and Incentives:**\n    *   Designated startups are eligible for incentives provided under the Proclamation (Page 17, Article 17, Sub-Article 2).\n    *   They are recognized as beneficiaries of the **National Credit Guarantee Fund**, which aims to increase the level of credit access for startups (Page 29, Article 26, Sub-Article 2).\n    *   Founders have the right to apply for grants, provided they disclose any ownership interests or significant management roles they hold in other designated startups (Page 29, Article 25, Sub-Article 7).\n\n*   **Right to Due Process and Objection:**\n    *   If the Ministry suspends a startup's designation, the owner has the right to be notified in writing of the cause and the measures needed to rectify the shortcomings within 30 days (Page 17, Article 17, Sub-Article 3).\n    *   If the suspension is rectified within the prescribed 30 days, the startup has the right to have the suspension lifted (Page 17, Article 17, Sub-Article 4).\n    *   In cases where a designation is at risk of being revoked, the startup has the right to submit an objection within 30 working days of receiving notice (Page 19, Article 15, Sub-Article 3).",
+      "sources": [
+        12,
+        17,
+        19,
+        29,
+        38
+      ],
+      "articles": []
+    },
+    {
+      "question": "ስታርታፕ ምንድ ነው",
+      "answer": "በስታርታፕ አዋጅ ቁጥር 1396/2025 መሠረት፣ **“ስታርታፕ”** ማለት የሚከተሉትን መስፈርቶች የሚያሟላ ቡድን ወይም ሰው ነው፡-\n\n*   **የሥራ ታሪክ፡** ምንም የንግድ ሥራ እንቅስቃሴ ታሪክ የሌለው ወይም የተወሰነ የንግድ ሥራ እንቅስቃሴ ታሪክ ብቻ ያለው፤\n*   **ተግባር፡** ኢኖቬሽንን (ፈጠራን) ተግባራዊ የሚያደርግ የቴክኖሎጂ ወይም በቴክኖሎጂ የታገዘ ምርትን፣ አገልግሎትን ወይም ሒደትን በማስተዋወቅ፣ በመፍጠር፣ በማበልፀግ፣ ሽግግርና ማላመድ በማድረግ፣ ወይም በምሌስ-ምሕንድስና (reverse engineering) አማካኝነት ኢኮኖሚያዊ ዕሴትን በመፍጠር ላይ የተሰማራ፤\n*   **ባህሪ፡** ተመንዳጊ (scalable) እና የገበያ መዋቅርን የሚለውጥ ሥራ ላይ ያተኮረ።\n\n**ምንጭ፦** ገጽ 2፣ አንቀጽ 2(1) (Page 2, Article 2(1))",
+      "sources": [
+        2,
+        4,
+        6,
+        8,
+        11
+      ],
+      "articles": [
+        "Article_47",
+        "Article_55"
+      ]
     }
   ]
 }

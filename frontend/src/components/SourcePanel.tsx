@@ -13,7 +13,7 @@ export function SourcePanel({ sources }: SourcePanelProps) {
           <FileText size={18} className="text-muted-foreground" />
         </div>
         <p className="text-[13px] text-muted-foreground">
-          Source documents will appear here when you submit a query.
+          Page and article citations from the RAG response will show here after you send a question.
         </p>
       </div>
     );

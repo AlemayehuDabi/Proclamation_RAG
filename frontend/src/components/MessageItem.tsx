@@ -1,18 +1,28 @@
-import ReactMarkdown from 'react-markdown';
-import { User, Bot } from 'lucide-react';
-import type { ChatMessage } from '@/utils/api';
-import { cn } from '@/lib/utils';
+import ReactMarkdown from "react-markdown";
+import { format } from "date-fns";
+import { User, Bot } from "lucide-react";
+import type { ChatMessage } from "@/utils/api";
+import { cn } from "@/lib/utils";
 
 interface MessageItemProps {
   message: ChatMessage;
 }
 
 export function MessageItem({ message }: MessageItemProps) {
-  const isUser = message.role === 'user';
-  const isAmharic = message.language === 'AM';
+  const isUser = message.role === "user";
+  const isAmharic = message.language === "AM";
+  const time =
+    message.createdAt != null
+      ? format(new Date(message.createdAt), "HH:mm")
+      : null;
 
   return (
-    <div className={cn('group flex gap-4 py-5', isUser ? 'justify-end' : '')}>
+    <div
+      className={cn(
+        "group flex gap-4 py-5 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both",
+        isUser ? "justify-end" : ""
+      )}
+    >
       {!isUser && (
         <div className="shrink-0 w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center mt-0.5">
           <Bot size={14} className="text-primary" />
@@ -20,45 +30,52 @@ export function MessageItem({ message }: MessageItemProps) {
       )}
       <div
         className={cn(
-          'min-w-0 max-w-[65ch]',
-          isUser ? 'text-right' : '',
-          isAmharic ? 'font-ethiopic leading-relaxed' : '',
+          "min-w-0 max-w-[65ch]",
+          isUser ? "text-right" : "",
+          isAmharic ? "font-ethiopic leading-relaxed" : ""
         )}
       >
         {isUser ? (
-          <div className="inline-block text-left bg-primary text-primary-foreground px-4 py-2.5 rounded-xl rounded-tr-sm text-[15px] leading-relaxed">
-            {message.content}
+          <div>
+            <div className="inline-block text-left bg-primary text-primary-foreground px-4 py-2.5 rounded-xl rounded-tr-sm text-[15px] leading-relaxed shadow-sm">
+              {message.content}
+            </div>
+            {time && (
+              <p className="mt-1.5 text-[10px] text-muted-foreground/80 font-medium text-right">
+                {time}
+              </p>
+            )}
+          </div>
+        ) : !message.content.trim() ? (
+          <div className="rounded-2xl border border-border/60 bg-muted/20 px-4 py-3 max-w-md">
+            <div className="flex gap-1.5 py-1">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="h-2 w-2 rounded-full bg-muted-foreground/35 animate-pulse-dot"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                />
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="prose-chat text-foreground">
+          <div className="prose-chat text-foreground rounded-2xl border border-border/40 bg-card/30 px-4 py-3 shadow-sm">
             <ReactMarkdown
               components={{
-                p: ({ children }) => (
-                  <p className="mb-3 last:mb-0">{children}</p>
-                ),
+                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
                 strong: ({ children }) => (
-                  <strong className="font-semibold text-foreground">
-                    {children}
-                  </strong>
+                  <strong className="font-semibold text-foreground">{children}</strong>
                 ),
-                ul: ({ children }) => (
-                  <ul className="mb-3 ml-4 list-disc space-y-1">{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="mb-3 ml-4 list-decimal space-y-1">
-                    {children}
-                  </ol>
-                ),
-                li: ({ children }) => (
-                  <li className="text-foreground">{children}</li>
-                ),
+                ul: ({ children }) => <ul className="mb-3 ml-4 list-disc space-y-1">{children}</ul>,
+                ol: ({ children }) => <ol className="mb-3 ml-4 list-decimal space-y-1">{children}</ol>,
+                li: ({ children }) => <li className="text-foreground">{children}</li>,
                 blockquote: ({ children }) => (
                   <blockquote className="border-l-2 border-primary/30 pl-4 italic text-muted-foreground my-3">
                     {children}
                   </blockquote>
                 ),
                 code: ({ children, className }) => {
-                  const isBlock = className?.includes('language-');
+                  const isBlock = className?.includes("language-");
                   if (isBlock) {
                     return (
                       <pre className="bg-secondary rounded-lg p-4 overflow-x-auto my-3 text-[13px]">
@@ -76,6 +93,9 @@ export function MessageItem({ message }: MessageItemProps) {
             >
               {message.content}
             </ReactMarkdown>
+            {time && (
+              <p className="mt-3 text-[10px] text-muted-foreground/80 font-medium">{time}</p>
+            )}
           </div>
         )}
         {message.sources && message.sources.length > 0 && (
@@ -85,7 +105,8 @@ export function MessageItem({ message }: MessageItemProps) {
                 key={s.id}
                 className="inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md"
               >
-                [{i + 1}] p.{s.pageNumber}
+                [{i + 1}]
+                {s.pageNumber != null ? ` p.${s.pageNumber}` : ""}
               </span>
             ))}
           </div>
@@ -100,20 +121,23 @@ export function MessageItem({ message }: MessageItemProps) {
   );
 }
 
-export function TypingIndicator() {
+export function TypingIndicator({ label = "Thinking" }: { label?: string }) {
   return (
-    <div className="flex gap-4 py-5">
+    <div className="flex gap-4 py-5 animate-in fade-in duration-300">
       <div className="shrink-0 w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center">
         <Bot size={14} className="text-primary" />
       </div>
-      <div className="flex items-center gap-1.5 pt-2">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="w-2 h-2 rounded-full bg-muted-foreground/40 animate-pulse-dot"
-            style={{ animationDelay: `${i * 0.2}s` }}
-          />
-        ))}
+      <div className="rounded-2xl border border-border/60 bg-muted/15 px-4 py-3 flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="w-2 h-2 rounded-full bg-muted-foreground/45 animate-pulse-dot"
+              style={{ animationDelay: `${i * 0.2}s` }}
+            />
+          ))}
+        </div>
+        <span className="text-[13px] text-muted-foreground font-medium">{label}…</span>
       </div>
     </div>
   );

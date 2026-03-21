@@ -6,9 +6,8 @@ Static source RAG: run ingest_proclamation once, then use POST /query for retrie
 
 from __future__ import annotations
 
-from typing import List
-
 import os
+from typing import List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,16 +23,16 @@ app = FastAPI(
     description="Bilingual (Amharic/English) RAG over Ethiopian Startup Proclamation No. 1396/2025",
 )
 
-# CORS: comma-separated origins in CORS_ORIGINS, e.g. "http://localhost:8080,https://app.example.com"
+# CORS: comma-separated origins in CORS_ORIGINS, or "*" in development only
 _cors_raw = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:8080,http://127.0.0.1:8080,http://[::1]:8080",
+    "http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173",
 )
-_cors_origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
-if _cors_origins:
+_cors_list = [o.strip() for o in _cors_raw.split(",") if o.strip()]
+if _cors_list:
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=_cors_origins,
+        allow_origins=_cors_list,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
